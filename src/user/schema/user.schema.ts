@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Document } from 'mongoose'
 
-@Schema()
+@Schema({ timestamps: true })
 export class User extends Document {
 
   @Prop({ unique: true })
