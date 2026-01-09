@@ -5,7 +5,7 @@ export class IdValidationPipe implements PipeTransform {
     transform(value: any, metadata: ArgumentMetadata) {
         if (metadata.type !== 'param') return value
         if(!Types.ObjectId.isValid(value)) 
-            throw new BadRequestException("Неправильный формат ID пользователя")
+            throw new BadRequestException("Неправильный формат ID")
         return value
     }
 }

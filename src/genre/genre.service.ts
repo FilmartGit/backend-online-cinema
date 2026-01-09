@@ -62,11 +62,14 @@ export class GenreService {
   }
 
   async update(_id: string, dto: CreateGenreDto) {
-    return await this.genreModel
+    const genre = await this.genreModel
       .findByIdAndUpdate(_id, dto, {
         new: true,
       })
       .exec()
+
+    if (!genre) throw new NotFoundException('Жанр не найден')
+    return genre
   }
 
   async create() {
@@ -85,6 +88,8 @@ export class GenreService {
   }
 
   async deleteGenre(id: string) {
-    return await this.genreModel.findByIdAndDelete(id).exec()
+    const genre = await this.genreModel.findByIdAndDelete(id).exec()
+    if (!genre) throw new NotFoundException('Жанр не найден')
+    return genre
   }
 }
