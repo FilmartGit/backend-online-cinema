@@ -22,8 +22,7 @@ export class GenreController {
 
   @Get('by-slug/:slug')
   async getSlug(@Param('slug') slug: string): Promise<any> {
-    const doc = await this.genreService.getSlug(slug)
-
+    return await this.genreService.getSlug(slug)
   }
 
   @Get('collections')
@@ -42,7 +41,7 @@ export class GenreController {
   async get(@Param('id', IdValidationPipe) id: string): Promise<any> {
     return await this.genreService.findById(id)
   }
-  
+
   @UsePipes(new ValidationPipe())
   @Put(':id')
   @HttpCode(200)
