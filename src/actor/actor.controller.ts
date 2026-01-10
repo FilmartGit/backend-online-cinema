@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -11,47 +12,41 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common'
-import { Auth } from 'src/auth/decorators/auth.decorator'
-import { GenreService } from './genre.service'
+import { ActorService } from './actor.service'
 import { IdValidationPipe } from 'src/pipes/id.validation.pipe'
-import { CreateGenreDto } from './dto/createGenre.dto'
+import { Auth } from 'src/auth/decorators/auth.decorator'
+import { ActorDto } from './dto/actor.dto'
 
-@Controller('genres')
-export class GenreController {
-  constructor(private readonly genreService: GenreService) {}
+@Controller('actors')
+export class ActorController {
+  constructor(private readonly actorService: ActorService) {}
 
   @Get('by-slug/:slug')
   async getSlug(@Param('slug') slug: string): Promise<any> {
-    const doc = await this.genreService.getSlug(slug)
-
-  }
-
-  @Get('collections')
-  async getCollections(): Promise<any> {
-    return await this.genreService.getCollections()
+    return await this.actorService.getSlug(slug)
   }
 
   @Get()
   @HttpCode(200)
   async getAll(@Query('searchTerm') searchTerm?: string): Promise<any> {
-    return await this.genreService.getAll(searchTerm)
+    return await this.actorService.getAll(searchTerm)
   }
 
   @Get(':id')
   @Auth('admin')
   async get(@Param('id', IdValidationPipe) id: string): Promise<any> {
-    return await this.genreService.findById(id)
+    return await this.actorService.findById(id)
   }
-  
+
   @UsePipes(new ValidationPipe())
   @Put(':id')
   @HttpCode(200)
   @Auth('admin')
   async update(
     @Param('id', IdValidationPipe) id: string,
-    @Body() dto: CreateGenreDto
+    @Body() dto: ActorDto
   ) {
-    return await this.genreService.update(id, dto)
+    return await this.actorService.update(id, dto)
   }
 
   @UsePipes(new ValidationPipe())
@@ -59,13 +54,13 @@ export class GenreController {
   @HttpCode(200)
   @Auth('admin')
   async create() {
-    return await this.genreService.create()
+    return await this.actorService.create()
   }
 
   @Delete(':id')
   @HttpCode(200)
   @Auth('admin')
   async delete(@Param('id', IdValidationPipe) id: string) {
-    return await this.genreService.deleteGenre(id)
+    return await this.actorService.deleteactor(id)
   }
 }

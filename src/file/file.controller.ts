@@ -19,7 +19,7 @@ export class FileController {
   @Post('uploads')
   @HttpCode(200)
   @Auth('admin')
-  @UseInterceptors(FilesInterceptor('image'))
+  @UseInterceptors(FilesInterceptor('file'))
   async saveFiles(
     @UploadedFiles() files: Express.Multer.File[],
     @Query('folder') folder?: string
