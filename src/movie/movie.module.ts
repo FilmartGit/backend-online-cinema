@@ -25,5 +25,6 @@ import { Genre, GenreSchema } from 'src/genre/schema/genre.schema'
   ],
   controllers: [MovieController],
   providers: [MovieService],
+  exports: [MovieService],
 })
 export class MovieModule {}

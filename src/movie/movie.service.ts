@@ -73,7 +73,7 @@ export class MovieService {
 
   async updateCountOpened(dto: UpdateCountopenedDto) {
     const slug = dto.slug
-    if(!slug) throw new BadRequestException('Не передан slug')
+    if (!slug) throw new BadRequestException('Не передан slug')
 
     const movie = await this.movieModel
       .findOneAndUpdate(
@@ -96,6 +96,18 @@ export class MovieService {
       .find({ countOpened: { $gt: 0 } }) // $gt - "больше чем >" // $lt - "меньше чем <"
       .sort({ countOpened: -1 })
       .populate('genres') // Разворачиваем связанные документы и ищем в них
+      .exec()
+  }
+
+  async updateRating(id: Types.ObjectId, newRating: number) {
+    return await this.movieModel
+      .findByIdAndUpdate(
+        id,
+        {
+          rating: newRating,
+        },
+        { new: true }
+      )
       .exec()
   }
 
