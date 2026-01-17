@@ -1,4 +1,4 @@
-## Backend приложения - Онлайн кинотеатр
+## Backend приложение - Онлайн кинотеатр
 
 Фреймворк:
 Nest.js 
@@ -6,3 +6,5 @@ Nest.js
 Auth:
 JWT / access+refresh tokens
 
+DataBase:
+MongoDB + Mongoose

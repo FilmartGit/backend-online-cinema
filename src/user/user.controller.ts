@@ -18,6 +18,8 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { UserDecor } from './decorators/user.decorator'
 import { UpdateUserDto } from './dto/updateUser.dto'
 import { IdValidationPipe } from 'src/pipes/id.validation.pipe'
+import { Types } from 'mongoose'
+import { User } from './schema/user.schema'
 
 @Controller('users')
 export class UserController {
@@ -28,6 +30,23 @@ export class UserController {
   @HttpCode(200)
   async getProfile(@UserDecor('_id') id: string): Promise<any> {
     return await this.userService.findById(id)
+  }
+
+  @Get('profile/favorites')
+  @Auth()
+  @HttpCode(200)
+  async getFavorites(@UserDecor('_id') id: Types.ObjectId): Promise<any> {
+    return await this.userService.getFavorites(id)
+  }
+
+  @Put('profile/favorites')
+  @Auth()
+  @HttpCode(200)
+  async toggleFavorites(
+    @Body('movieId', IdValidationPipe) movieId: Types.ObjectId,
+    @UserDecor() user: User
+  ): Promise<any> {
+    return await this.userService.toggleFavorite(movieId, user)
   }
 
   @Get('count')
@@ -43,8 +62,8 @@ export class UserController {
   async getAllUsers(@Query('searchTerm') searchTerm?: string): Promise<any> {
     return await this.userService.getAll(searchTerm)
   }
-  
-  @Get(":id")
+
+  @Get(':id')
   @Auth('admin')
   @HttpCode(200)
   async getUser(@Param('id', IdValidationPipe) id: string): Promise<any> {

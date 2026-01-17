@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Schema as MongooseSchema, Types } from 'mongoose'
+import { Movie } from 'src/movie/schema/movie.schema'
+
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -16,8 +18,8 @@ export class User extends Document {
   @Prop({ default: false })
   isAdmin?: boolean
 
-  @Prop({ default: [] })
-  favorites?: string[]
+  @Prop({ default: [], type: [{ type: MongooseSchema.Types.ObjectId, ref: Movie.name }] })
+  favorites?: Types.ObjectId[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
