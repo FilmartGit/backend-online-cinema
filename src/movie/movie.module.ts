@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { Movie, MovieSchema } from './schema/movie.schema'
 import { Actor, ActorSchema } from 'src/actor/schema/actor.schema'
 import { Genre, GenreSchema } from 'src/genre/schema/genre.schema'
+import { TelegramModule } from 'src/telegram/telegram.module'
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Genre, GenreSchema } from 'src/genre/schema/genre.schema'
         schema: GenreSchema,
       },
     ]),
+    TelegramModule,
   ],
   controllers: [MovieController],
   providers: [MovieService],

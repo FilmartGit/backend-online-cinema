@@ -3,17 +3,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { Model, Types } from 'mongoose'
+import { Model, Types, UpdateOneModel } from 'mongoose'
 import { Movie } from './schema/movie.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { title } from 'process'
 import { CreateMovieDto } from './dto/createMovie.dto'
 import { UpdateCountopenedDto } from './dto/updateCouuntopened.dto'
+import { TelegramService } from 'src/telegram/telegram.service'
 
 @Injectable()
 export class MovieService {
   constructor(
-    @InjectModel(Movie.name) private readonly movieModel: Model<Movie>
+    @InjectModel(Movie.name) private readonly movieModel: Model<Movie>,
+    private readonly telegramService: TelegramService
   ) {}
 
   async getAll(searchTerm?: string) {
@@ -122,6 +124,13 @@ export class MovieService {
   }
 
   async update(_id: string, dto: CreateMovieDto) {
+
+    // Проверка, если фильм не был опубликован в телеграм, то отправляем уведомление
+    if (!dto.isSendTelegram) {
+      await this.sendNotification(dto)
+      dto.isSendTelegram = true
+    }
+
     const movie = await this.movieModel
       .findByIdAndUpdate(_id, dto, {
         new: true,
@@ -155,5 +164,28 @@ export class MovieService {
     const movie = await this.movieModel.findByIdAndDelete(id).exec()
     if (!movie) throw new NotFoundException('Фильм не найден')
     return movie
+  }
+
+  async sendNotification(dto: CreateMovieDto) {
+    if (process.env.NODE_ENV === 'production') {
+      // await this.telegramService.sendPhoto(dto.poster)
+    }
+    await this.telegramService.sendPhoto(
+      'https://avatars.mds.yandex.net/get-mpic/1554397/img_id6243470463670483560.jpeg/orig'
+    )
+
+    const message = `<b>${dto.title}</b>\n\n ${dto.description}\n\n`
+    await this.telegramService.sendMessage(message, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: 'Смотреть',
+              url: `${process.env.URL_MOVIE}${dto.slug}`,
+            },
+          ],
+        ],
+      },
+    })
   }
 }
